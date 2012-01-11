@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+    <title>Ben's simple Google Code wiki print</title>
+    <link type="text/css" href="http://wikiwym.googlecode.com/svn/branches/stable/lib/prettify/prettify.css"/>
+
+    <style type="text/css">
+        .document:first-child {
+            page-break-before: auto;
+        }
+        .document {
+            page-break-before: always;
+            position: relative;
+        }
+        .documentName {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            font-style: italic;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://wikiwym.googlecode.com/svn/branches/stable/lib/GoogleCodeWikiParser.js"></script>
+    <script type="text/javascript" src="http://wikiwym.googlecode.com/svn/branches/stable/lib/prettify/prettify.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var parser = new GoogleCodeWikiParser(),
+                pagesOut = $('#pagesOut');
+        
+            $('#prepare').click(function() {
+                var pages = $('#pagesInput').val().split(',');
+                for(var i = 0; i < pages.length; i++) {
+                    var page = pages[i] + '.wiki';
+                    $.get(page, function(data) {
+                        pagesOut.append($(document.createElement('div'))
+                            .addClass('document')
+                            .html(parser.parse(data))
+                            .prepend($(document.createElement('div'))
+                                .text(page)
+                                .addClass('documentName')));
+                    });
+                }
+                $('#setupForm').hide();
+            });
+        });
+    </script>
+</head>
+<body>
+<form id="setupForm">
+    <label for="pagesInput">
+        Pages (comma-separated):
+        <input type="text" id="pagesInput" name="pagesInput"
+            placeholder="introduction,installation"/>
+    </label>
+    <input type="button" id="prepare" value="Prepare for print"/>
+</form>
+<div id="pagesOut">
+</div>
+</body>
+</html>
